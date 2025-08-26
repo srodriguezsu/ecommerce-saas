@@ -7,14 +7,22 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 const SALT_ROUNDS = 10;
 
-router.post("/singin", (req, res) => {
+router.post("/singin", async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
     return res.status(400).json({ error: "email, password, required" });
   }
-  // TODO find user info and verify password from the db
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.status(401).json({ error: "Credenciales inválidas" });
+  }
+  const isValid = await bcrypt.compare(password, user.password_hashed);
+  if (!isValid) {
+    return res.status(401).json({ error: "Credenciales inválidas" });
+  }
+
   const token = jwt.sign(
-    { email }, // TODO add user's id
+    { email }, // TODO add user's id and tenants id
     JWT_SECRET,
     { expiresIn: "2h" }
   );
@@ -44,7 +52,7 @@ router.post("/signup", async (req, res) => {
         last_name
     })
     const token = jwt.sign(
-        { email }, // TODO add user's id
+        { email }, // TODO add user's id and tenants id
         JWT_SECRET,
         { expiresIn: "2h" }
     );

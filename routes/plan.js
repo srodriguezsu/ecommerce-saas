@@ -17,4 +17,6 @@ router.post('/create', async (req, res) => {
   }
 });
 
+// TODO Implementar CRUD
+
 export default router;

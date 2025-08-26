@@ -17,6 +17,7 @@ const ALLOWED_WC_RESOURCES = new Set([
   "refunds"
 ]);
 
+// TODO reviar proxy
 router.all("/*", authJWT, async (req, res) => {
   try {
     const tenantId = req.user?.tenantId;
