@@ -24,6 +24,7 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       JWT_SECRET: your_jwt_secret
+      SUPER_PASSWORD: your_super_password
       # Add other env vars as needed
     ports:
       - "3002:3002"

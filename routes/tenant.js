@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
   try {
     const { name, email, planId } = req.body;
-    if (!name || !email || !planId) {
+    if (!name || !email) {
       return res.status(400).json({ error: 'Faltan datos requeridos.' });
     }
     const tenant = await Tenant.create({ name, email, planId });

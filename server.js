@@ -10,6 +10,8 @@ import planRouter from "./routes/plan.js";
 import tenantRouter from "./routes/tenant.js";
 import wooGatewayRouter from "./routes/wooGateway.js";
 
+import { superPassword } from "./middleware/superPassword.js";
+
 dotenv.config();
 
 const app = express();
@@ -29,10 +31,10 @@ const PORT = process.env.PORT || 3002;
 // Auth routes
 app.use("/auth", authRouter);
 
-// Tenant register
-app.use("/super/tenant", tenantRouter);
 
-// Plan create
+// Apply superPassword middleware to all /super/ routes
+app.use("/super", superPassword);
+app.use("/super/tenant", tenantRouter);
 app.use("/super/plan", planRouter);
 
 // WooCommerce gateway
