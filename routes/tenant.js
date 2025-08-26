@@ -1,6 +1,6 @@
-const express = require('express');
+import express from "express";
+import Tenant from "../models/Tenant.js";
 const router = express.Router();
-const { Tenant } = require('../models');
 
 // Ruta para registrar un nuevo tenant
 router.post('/create', async (req, res) => {
@@ -15,5 +15,7 @@ router.post('/create', async (req, res) => {
     res.status(500).json({ error: 'Error al registrar el tenant.', details: error.message });
   }
 });
+
+
 
 export default router;

@@ -1,6 +1,7 @@
-const express = require('express');
+import express from "express";
+import Plan  from '../models/Plan.js';
+
 const router = express.Router();
-const { Plan } = require('../models');
 
 // Ruta para crear un nuevo plan
 router.post('/create', async (req, res) => {
