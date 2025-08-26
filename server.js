@@ -6,6 +6,8 @@ import rateLimit from "express-rate-limit";
 import morgan from "morgan";
 
 import authRouter from "./routes/auth.js";
+import tenantRegisterRouter from "./routes/tenantRegister.js";
+import planCreateRouter from "./routes/planCreate.js";
 import wooGatewayRouter from "./routes/wooGateway.js";
 
 dotenv.config();
@@ -22,10 +24,16 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // Auth routes
 app.use("/auth", authRouter);
+
+// Tenant register
+app.use("/super/tenant", tenantRegisterRouter);
+
+// Plan create
+app.use("/super/plan", planCreateRouter);
 
 // WooCommerce gateway
 app.use("/api/woo", wooGatewayRouter);

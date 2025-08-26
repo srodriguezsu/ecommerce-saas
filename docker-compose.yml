@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    command: npm run dev
+    environment:
+      DB_NAME: ecommerce
+      DB_USER: user
+      DB_PASS: password
+      DB_HOST: db
+      DB_PORT: 3306
+      JWT_SECRET: your_jwt_secret
+      # Add other env vars as needed
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+
+volumes:
+  db_data:
