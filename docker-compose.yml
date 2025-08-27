@@ -18,14 +18,21 @@ services:
     build: .
     command: npm run dev
     environment:
-      DB_NAME: ecommerce
-      DB_USER: user
-      DB_PASS: password
-      DB_HOST: db
-      DB_PORT: 3306
-      JWT_SECRET: your_jwt_secret
-      SUPER_PASSWORD: your_super_password
-      # Add other env vars as needed
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - SUPER_PASSWORD=${SUPER_PASSWORD}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_SECURE=${EMAIL_SECURE}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_CLIENT_ID=${EMAIL_CLIENT_ID}
+      - EMAIL_CLIENT_SECRET=${EMAIL_CLIENT_SECRET}
+      - EMAIL_REFRESH_TOKEN=${EMAIL_REFRESH_TOKEN}
+      - EMAIL_FROM=${EMAIL_FROM}
     ports:
       - "3002:3002"
     depends_on:
