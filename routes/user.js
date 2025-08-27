@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import { sendEmail } from "../helpers/sendEmail.js"; // Add this import
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
@@ -30,6 +31,22 @@ router.post("/create", async (req, res) => {
       name,
       last_name,
     });
+
+    // Send welcome email
+    await sendEmail({
+      to: email,
+      subject: "¡Bienvenido a la plataforma!",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; border: 1px solid #eee; border-radius: 8px; padding: 24px; background: #fafafa;">
+          <h2 style="color: #2d3748;">¡Bienvenido${name ? `, ${name}` : ""}!</h2>
+          <p>Tu cuenta ha sido creada exitosamente en nuestra plataforma.</p>
+          <p>Ahora puedes iniciar sesión y comenzar a usar nuestros servicios.</p>
+          <hr style="margin: 32px 0;">
+          <p style="font-size: 0.9em; color: #888;">Si tienes alguna duda, responde a este correo y nuestro equipo te ayudará.</p>
+        </div>
+      `,
+    });
+
     res.status(201).json({ user });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {

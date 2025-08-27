@@ -7,7 +7,7 @@ import { sendEmail } from "../helpers/sendEmail.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-
+const OTP_EXP_TIME = process.env.OTP_EXP_TIME || 10 * 60 * 1000; // 10 minutes
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body || {};
@@ -45,6 +45,12 @@ router.post("/send-otp", async (req, res) => {
   // find if an otp for that user had already been sent
   const existingOtp = await OTP.findOne({ where: { user_id: user.id } });
   if (existingOtp) {
+    // if user has an otp that is not expired
+    const isExpired = existingOtp.created_at < Date.now() - OTP_EXP_TIME;
+    if (!isExpired) {
+      return res.status(400).json({ error: "OTP ya enviado" });
+    }
+
     await OTP.update(
       { value: otp, created_at: new Date() },
       { where: { user_id: user.id } }
@@ -54,10 +60,24 @@ router.post("/send-otp", async (req, res) => {
   }
   await sendEmail({
     to: email,
-    subject: "Your OTP Code",
-    text: `Your OTP code is ${otp}`,
+    subject: "Cambio de contraseña",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; border: 1px solid #eee; border-radius: 8px; padding: 24px; background: #fafafa;">
+        <h2 style="color: #2d3748;">Verificación de seguridad</h2>
+        <p>Hola <b>${user.name || user.email}</b>,</p>
+        <p>Recibimos una solicitud para cambiar tu contraseña. Por favor, utiliza el siguiente código de verificación para continuar:</p>
+        <div style="text-align: center; margin: 24px 0;">
+          <span style="font-size: 2rem; letter-spacing: 8px; background: #e2e8f0; padding: 12px 24px; border-radius: 6px; color: #2b6cb0; font-weight: bold;">
+            ${otp}
+          </span>
+        </div>
+        <p>Si no solicitaste este cambio, ignora este correo y tu contraseña permanecerá segura.</p>
+        <hr style="margin: 32px 0;">
+        <p style="font-size: 0.9em; color: #888;">Este código es válido por ${OTP_EXP_TIME / 60000} minutos y solo debe ser usado por ti.</p>
+      </div>
+    `,
   });
-  res.json({ message: "OTP creado" });
+  res.json({ message: "OTP enviado" });
 });
 
 
