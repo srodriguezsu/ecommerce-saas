@@ -8,12 +8,12 @@ const router = express.Router();
 
 // Allowed WordPress REST API resources
 const ALLOWED_WP_RESOURCES = new Set([
-  "posts",
-  "pages",
-  "categories",
-  "tags",
+//   "posts",
+//   "pages",
+//   "categories",
+//   "tags",
   "media",
-  "users",
+//   "users",
   "comments",
 ]);
 
