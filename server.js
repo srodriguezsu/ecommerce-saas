@@ -8,6 +8,7 @@ import morgan from "morgan";
 import authRouter from "./routes/auth.js";
 import planRouter from "./routes/plan.js";
 import tenantRouter from "./routes/tenant.js";
+import userRouter from "./routes/user.js";
 import wooGatewayRouter from "./routes/wooGateway.js";
 
 import { superPassword } from "./middleware/superPassword.js";
@@ -36,6 +37,7 @@ app.use("/auth", authRouter);
 app.use("/super", superPassword);
 app.use("/super/tenant", tenantRouter);
 app.use("/super/plan", planRouter);
+app.use("/super/user", userRouter);
 
 // WooCommerce gateway
 app.use("/api/woo", wooGatewayRouter);
