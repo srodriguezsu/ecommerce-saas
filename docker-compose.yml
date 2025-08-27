@@ -33,6 +33,7 @@ services:
       - EMAIL_CLIENT_SECRET=${EMAIL_CLIENT_SECRET}
       - EMAIL_REFRESH_TOKEN=${EMAIL_REFRESH_TOKEN}
       - EMAIL_FROM=${EMAIL_FROM}
+      - OTP_EXP_TIME=${OTP_EXP_TIME}
     ports:
       - "3002:3002"
     depends_on:
