@@ -15,3 +15,10 @@ export function buildWooUrl(tenant, resourcePath, originalQuery) {
 
   return `${base}?${params.toString()}`;
 }
+
+export function buildWPUrl(tenant, resourcePath, queryParams) {
+  const baseUrl = `${tenant.domain}/wp-json/wp/v2/${resourcePath}`;
+  const query = new URLSearchParams(queryParams).toString();
+  return query ? `${baseUrl}?${query}` : baseUrl;
+}
+
