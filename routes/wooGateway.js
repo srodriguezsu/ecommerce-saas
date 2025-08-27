@@ -1,7 +1,7 @@
 import express from "express";
 import axios from "axios";
 import { authJWT } from "../middleware/authJWT.js";
-import { getTenantConfig } from "../config/tenants.js";
+import { getWooConfig } from "../helpers/tenants.js";
 import { buildWooUrl } from "../helpers/buildWooUrl.js";
 
 const router = express.Router();
@@ -21,7 +21,8 @@ const ALLOWED_WC_RESOURCES = new Set([
 router.all("/*", authJWT, async (req, res) => {
   try {
     const tenant_id = req.user?.tenant_id;
-    const tenant = getTenantConfig(tenant_id);
+    const tenant = await getWooConfig(tenant_id);
+    console.log("Tenant config:", tenant);
     if (!tenant) return res.status(403).json({ error: "Tenant not configured" });
 
     const resourcePath = req.params[0] || "";

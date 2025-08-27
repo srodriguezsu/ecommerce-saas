@@ -2,6 +2,7 @@ import { URLSearchParams } from "url";
 
 export function buildWooUrl(tenant, resourcePath, originalQuery) {
   const base = `${tenant.domain.replace(/\/$/, "")}/wp-json/wc/v3/${resourcePath.replace(/^\/+/, "")}`;
+  console.log("Base URL:", base);
   const params = new URLSearchParams();
 
   for (const [k, v] of Object.entries(originalQuery || {})) {
