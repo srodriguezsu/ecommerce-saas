@@ -80,5 +80,31 @@ router.post("/send-otp", async (req, res) => {
   res.json({ message: "OTP enviado" });
 });
 
+router.put("/change-password", async (req, res) => {
+  const { email, otp, new_password } = req.body || {};
+  if (!email || !otp || !new_password) {
+    return res.status(400).json({ error: "email, otp, new_password required" });
+  }
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ error: "Usuario no encontrado" });
+  }
+  const validOtp = await OTP.findOne({ where: { user_id: user.id, value: otp } });
+  if (!validOtp) {
+    return res.status(400).json({ error: "OTP inválido" });
+  }
+  const isExpired = validOtp.created_at < Date.now() - OTP_EXP_TIME;
+  if (isExpired) {
+    return res.status(400).json({ error: "OTP expirado" });
+  }
+  try {
+    user.password_hashed = await bcrypt.hash(new_password, 10);
+    await user.save();
+    await validOtp.destroy();
+    res.json({ message: "Contraseña cambiada exitosamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al cambiar la contraseña.", details: error.message });
+  }
+});
 
 export default router;
