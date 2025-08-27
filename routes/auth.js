@@ -22,7 +22,7 @@ router.post("/singin", async (req, res) => {
   }
 
   const token = jwt.sign(
-    { email }, // TODO add user's id and tenants id
+    { id: user.id, tenant_id: user.tenant_id, email: user.email },
     JWT_SECRET,
     { expiresIn: "2h" }
   );
@@ -35,6 +35,12 @@ router.post("/signup", async (req, res) => {
         return res.status(400).json({ error: "email, password, tenantId required" });
     }
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
+
+    
+   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   if (!emailRegex.test(email)) {
+       return res.status(400).json({ error: "Correo electrónico inválido" });
+   }
 
   if (!passwordRegex.test(password)) {
     return res.status(400).json({
@@ -52,7 +58,7 @@ router.post("/signup", async (req, res) => {
         last_name
     })
     const token = jwt.sign(
-        { email }, // TODO add user's id and tenants id
+        { id: user.id, tenant_id: user.tenant_id, email: user.email },
         JWT_SECRET,
         { expiresIn: "2h" }
     );

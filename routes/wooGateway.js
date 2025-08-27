@@ -17,11 +17,11 @@ const ALLOWED_WC_RESOURCES = new Set([
   "refunds"
 ]);
 
-// TODO reviar proxy
+// TODO revisar proxy
 router.all("/*", authJWT, async (req, res) => {
   try {
-    const tenantId = req.user?.tenantId;
-    const tenant = getTenantConfig(tenantId);
+    const tenant_id = req.user?.tenant_id;
+    const tenant = getTenantConfig(tenant_id);
     if (!tenant) return res.status(403).json({ error: "Tenant not configured" });
 
     const resourcePath = req.params[0] || "";
