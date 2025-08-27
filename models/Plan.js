@@ -5,7 +5,7 @@ import Tenant from "./Tenant.js";
 const Plan = sequelize.define("Plan", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   tenant_id: { type: DataTypes.INTEGER, references: { model: Tenant, key: "id" } },
-  star_date: { type: DataTypes.DATE },
+  start_date: { type: DataTypes.DATE },
   end_date: { type: DataTypes.DATE },
   price: { type: DataTypes.FLOAT },
   description: { type: DataTypes.TEXT },

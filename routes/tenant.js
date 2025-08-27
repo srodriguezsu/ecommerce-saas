@@ -73,10 +73,21 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const tenant = await Tenant.findByPk(req.params.id);
-    if (!tenant) return res.status(404).json({ error: 'Tenant no encontrado.' });
+    if (!tenant) {
+      return res.status(404).json({ error: 'Tenant no encontrado.' });
+    }
     await tenant.destroy();
-    res.json({ message: 'Tenant eliminado.' });
+    res.json({ message: 'Tenant eliminado correctamente.' });
   } catch (error) {
+    if (
+      error.name === 'SequelizeForeignKeyConstraintError' ||
+      (error.parent && error.parent.code === 'ER_ROW_IS_REFERENCED_2')
+    ) {
+      return res.status(409).json({
+        error: 'No se puede eliminar el tenant porque tiene planes asociados.',
+        details: error.message,
+      });
+    }
     res.status(500).json({ error: 'Error al eliminar el tenant.', details: error.message });
   }
 });
