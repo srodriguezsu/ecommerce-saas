@@ -19,7 +19,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(helmet());
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ 
+  origin: ["http://localhost:5174"], // allow localhost:5174
+  credentials: true 
+}));
 app.use(morgan("combined"));
 
 const limiter = rateLimit({
