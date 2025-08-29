@@ -20,7 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(cors({ 
-  origin: ["http://localhost:5174"], // allow localhost:5174
+  origin: true, // allow all origins
   credentials: true 
 }));
 app.use(morgan("combined"));
