@@ -11,6 +11,7 @@ import tenantRouter from "./routes/tenant.js";
 import userRouter from "./routes/user.js";
 import wooGatewayRouter from "./routes/wooGateway.js";
 import wpGatewayRouter from "./routes/wpGateway.js";
+import wooAnalyticsGatewayRouter from "./routes/wooAnalyticsGateway.js";
 
 import { superPassword } from "./middleware/superPassword.js";
 
@@ -45,6 +46,7 @@ app.use("/super/user", userRouter);
 
 // WooCommerce gateway
 app.use("/api/woo", wooGatewayRouter);
+app.use("/api/woo-analytics", wooAnalyticsGatewayRouter);
 
 //WordPress gateway
 app.use("/api/wp", wpGatewayRouter);
