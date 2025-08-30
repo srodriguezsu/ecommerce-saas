@@ -95,18 +95,28 @@ router.put("/:id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
-    // If password is being updated, hash it
-    if (req.body.password) {
+
+    // List of fields to update directly
+    const directFields = ["email", "name", "last_name", "tenant_id"];
+    let updated = {};
+
+    // Update direct fields if provided
+    for (const field of directFields) {
+      if (req.body[field] !== undefined) updated[field] = req.body[field];
+    }
+
+    // If password is being updated, hash it and validate
+    if (req.body.password !== undefined) {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
       if (!passwordRegex.test(req.body.password)) {
         return res.status(400).json({
           error: "La contraseña debe tener al menos 12 caracteres, una mayúscula, una minúscula, un número y un carácter especial",
         });
       }
-      req.body.password_hashed = await bcrypt.hash(req.body.password, SALT_ROUNDS);
-      delete req.body.password;
+      updated.password_hashed = await bcrypt.hash(req.body.password, SALT_ROUNDS);
     }
-    await user.update(req.body);
+
+    await user.update(updated);
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Error al actualizar el usuario.", details: error.message });

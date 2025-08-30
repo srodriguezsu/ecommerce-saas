@@ -51,11 +51,23 @@ router.put('/:id', async (req, res) => {
     if (!plan) {
       return res.status(404).json({ error: 'Plan no encontrado.' });
     }
-    // Verify start_date is before end_date
-    if (new Date(req.body.start_date) >= new Date(req.body.end_date)) {
-      return res.status(400).json({ error: 'La fecha de inicio debe ser anterior a la fecha de fin.' });
+
+    // Only update provided fields
+    const updatableFields = ['tenant_id', 'start_date', 'end_date', 'price', 'description', 'type'];
+    let updated = {};
+
+    for (const field of updatableFields) {
+      if (req.body[field] !== undefined) updated[field] = req.body[field];
     }
-    await plan.update(req.body);
+
+    // Validate dates if both are provided
+    if (updated.start_date !== undefined && updated.end_date !== undefined) {
+      if (new Date(updated.start_date) >= new Date(updated.end_date)) {
+        return res.status(400).json({ error: 'La fecha de inicio debe ser anterior a la fecha de fin.' });
+      }
+    }
+
+    await plan.update(updated);
     res.json(plan);
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar el plan.', details: error.message });
