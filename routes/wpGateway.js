@@ -21,7 +21,7 @@ router.all("/*", authJWT, async (req, res) => {
   try {
     const tenant_id = req.user?.tenant_id;
     const tenant = await getWPConfig(tenant_id);
-    if (!tenant) return res.status(403).json({ error: "Tenant not configured" });
+    if (!tenant) return res.status(403).json({ error: "No tienes un plan activo" });
 
     const resourcePath = req.params[0] || "";
     const firstSegment = (resourcePath.split("/")[0] || "").toLowerCase();

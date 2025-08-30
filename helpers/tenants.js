@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import Tenant from "../models/Tenant.js";
 import { decryptKey } from "./encryptKey.js";
 import { Op } from "sequelize";
+import "../models/associations.js";
 dotenv.config();
 
 // Helper to find tenant and active plan

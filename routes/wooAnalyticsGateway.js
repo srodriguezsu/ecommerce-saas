@@ -10,7 +10,7 @@ router.get("/*", authJWT, async (req, res) => {
   try {
     const tenant_id = req.user?.tenant_id;
     const tenant = await getWooConfig(tenant_id);
-    if (!tenant) return res.status(403).json({ error: "Tenant not configured" });
+    if (!tenant) return res.status(403).json({ error: "No tienes un plan activo" });
 
     // Construye la URL para /wp-json/wc-analytics/*
     const resourcePath = req.params[0] || "";
