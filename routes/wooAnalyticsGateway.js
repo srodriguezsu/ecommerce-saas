@@ -14,7 +14,7 @@ router.get("/*", authJWT, async (req, res) => {
 
     // Construye la URL para /wp-json/wc-analytics/*
     const resourcePath = req.params[0] || "";
-    const baseUrl = `${tenant.domain.replace(/\/$/, "")}/wp-json/wc-analytics/${resourcePath.replace(/^\/+/, "")}`;
+    const baseUrl = `${tenant.domain.replace(/\/$/, "")}/wp-json/wc-analytics/reports/${resourcePath.replace(/^\/+/, "")}`;
     const params = new URLSearchParams();
 
     // Copia los query params originales
