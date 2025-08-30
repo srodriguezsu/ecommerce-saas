@@ -21,7 +21,6 @@ router.all("/*", authJWT, async (req, res) => {
   try {
     const tenant_id = req.user?.tenant_id;
     const tenant = await getWPConfig(tenant_id);
-    console.log("Tenant WP config:", tenant);
     if (!tenant) return res.status(403).json({ error: "Tenant not configured" });
 
     const resourcePath = req.params[0] || "";
