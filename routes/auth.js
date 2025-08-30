@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
     JWT_SECRET,
     { expiresIn: "2h" }
   );
-  res.json({ user: { id: user.id, email: user.email, tenant: { id: tenant.id, name: tenant.name, url: tenant.url } }, token });
+  res.json({ user: { id: user.id, email: user.email, name: user.name, last_name: user.last_name, tenant: { id: tenant.id, name: tenant.name, url: tenant.url } }, token });
 });
 
 router.post("/send-otp", async (req, res) => {
