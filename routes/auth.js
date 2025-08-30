@@ -2,6 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import Tenant from "../models/Tenant.js";
 import OTP from "../models/OTP.js";
 import { sendEmail } from "../helpers/sendEmail.js";
 
@@ -18,6 +19,7 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return res.status(401).json({ error: "Credenciales inválidas" });
   }
+  const tenant = await Tenant.findOne({ where: { id: user.tenant_id } });
   const isValid = await bcrypt.compare(password, user.password_hashed);
   if (!isValid) {
     return res.status(401).json({ error: "Credenciales inválidas" });
@@ -28,7 +30,7 @@ router.post("/login", async (req, res) => {
     JWT_SECRET,
     { expiresIn: "2h" }
   );
-  res.json({ token });
+  res.json({ user: { id: user.id, email: user.email, tenant: { id: tenant.id, name: tenant.name, url: tenant.url } }, token });
 });
 
 router.post("/send-otp", async (req, res) => {
