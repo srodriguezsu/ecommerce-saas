@@ -1,5 +1,7 @@
 import express from "express";
 import axios from "axios";
+import multer from "multer";
+
 import { authJWT } from "../middleware/authJWT.js";
 import { getWPConfig } from "../helpers/tenants.js";
 import { buildWPUrl } from "../helpers/urlBuilder.js";
@@ -8,14 +10,42 @@ const router = express.Router();
 
 // Allowed WordPress REST API resources
 const ALLOWED_WP_RESOURCES = new Set([
-//   "posts",
-//   "pages",
-//   "categories",
-//   "tags",
   "media",
-//   "users",
   "comments",
 ]);
+
+const upload = multer();
+router.post("/media", authJWT, upload.single("file"), async (req, res) => {
+  try {
+    const tenant = await getWPConfig(req.user?.tenant_id);
+    if (!tenant) return res.status(403).json({ error: "No tienes un plan activo" });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const file = req.file;
+    const targetUrl = buildWPUrl(tenant, "media", req.query);
+
+    const upstream = await axios.post(targetUrl, file.buffer, {
+      headers: {
+        "Content-Type": file.mimetype,
+        "Content-Disposition": `attachment; filename="${file.originalname}"`
+      },
+      auth: {
+        username: tenant.consumerKey,
+        password: tenant.consumerSecret
+      },
+      timeout: 15000,
+      validateStatus: () => true
+    });
+
+    res.status(upstream.status).send(upstream.data);
+  } catch (err) {
+    console.error("Media upload error:", err.message);
+    res.status(502).json({ error: "Bad gateway", detail: err.message });
+  }
+});
+
 
 router.all("/*", authJWT, async (req, res) => {
   try {
@@ -69,5 +99,6 @@ router.all("/*", authJWT, async (req, res) => {
     res.status(502).json({ error: "Bad gateway", detail: err?.message });
   }
 });
+
 
 export default router;
