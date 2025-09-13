@@ -46,6 +46,10 @@ router.all("/*", authJWT, async (req, res) => {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
+      auth: {
+        username: tenant.consumerKey,
+        password: tenant.consumerSecret
+      },
       validateStatus: () => true
     };
 
