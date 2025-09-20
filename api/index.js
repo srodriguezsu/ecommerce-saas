@@ -5,15 +5,15 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
 
-import authRouter from "./routes/auth.js";
-import planRouter from "./routes/plan.js";
-import tenantRouter from "./routes/tenant.js";
-import userRouter from "./routes/user.js";
-import wooGatewayRouter from "./routes/wooGateway.js";
-import wpGatewayRouter from "./routes/wpGateway.js";
-import wooAnalyticsGatewayRouter from "./routes/wooAnalyticsGateway.js";
+import authRouter from "../routes/auth.js";
+import planRouter from "../routes/plan.js";
+import tenantRouter from "../routes/tenant.js";
+import userRouter from "../routes/user.js";
+import wooGatewayRouter from "../routes/wooGateway.js";
+import wpGatewayRouter from "../routes/wpGateway.js";
+import wooAnalyticsGatewayRouter from "../routes/wooAnalyticsGateway.js";
 
-import { superPassword } from "./middleware/superPassword.js";
+import { superPassword } from "../middleware/superPassword.js";
 
 dotenv.config();
 
@@ -54,6 +54,10 @@ app.use("/api/wp", wpGatewayRouter);
 // Healthcheck
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
-app.listen(PORT, () => {
-  console.log(`Gateway listening on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Gateway listening on http://localhost:${PORT}`);
+// });
+// Serverless for vercel
+import serverless from "serverless-http";
+
+export const handler = serverless(app);
